@@ -1,0 +1,22 @@
+#!/usr/bin/env mksh
+#
+#
+set -u -e -o pipefail
+THE_ARGS="$@"
+THIS_DIR="$( dirname "$(realpath "$0")" )"
+
+
+
+local +x DIR="$1"; shift
+
+# https://askubuntu.com/questions/84785/how-to-convert-ogg-to-aac-music-format
+IFS=$'\n'
+for FILE in $(find "$DIR" -type f -iname '*.ogg') ; do
+  output="$(dirname "$FILE")/$(basename "$FILE" .ogg).aac"
+  if [[ ! -e "$output" ]]; then
+    echo "=== Converting $FILE -> $output"
+    ffmpeg -i "$FILE" -strict experimental -acodec aac "$output"
+  fi
+done
+
+
